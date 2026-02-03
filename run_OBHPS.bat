@@ -8,11 +8,13 @@ echo Running BAT on GitHub Actions
 echo Current directory: %CD%
 echo ===============================
 
-REM Call PowerShell script RELATIVE to repo
+REM Run PowerShell script from SAME directory as BAT
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0run_all_tests_OBHPS.ps1"
 
-REM Optional wait
-timeout /t 5 /nobreak >nul
+IF %ERRORLEVEL% NEQ 0 (
+    echo PowerShell script failed
+    exit /b 1
+)
 
-echo BAT execution completed
+echo BAT execution completed successfully
 exit /b 0
