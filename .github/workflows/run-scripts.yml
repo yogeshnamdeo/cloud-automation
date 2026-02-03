@@ -1,7 +1,7 @@
 name: Run BAT PS JS Scripts
 
 on:
-  workflow_dispatch:   # allows "Run workflow" button
+  workflow_dispatch:
   push:
     branches: [ "main" ]
 
@@ -10,23 +10,21 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Debug – show files (optional but useful)
       - name: Show files
         run: dir
 
-      # 3️⃣ Run BAT file (IMPORTANT: use CMD)
       - name: Run BAT
         shell: cmd
         run: run_OBHPS.bat
 
-      # 4️⃣ Run PowerShell directly (backup / optional)
       - name: Run PowerShell
         run: powershell -ExecutionPolicy Bypass -File run_all_tests_OBHPS.ps1
 
-      # 5️⃣ Run JavaScript
+      - name: Install Node dependencies
+        run: npm install
+
       - name: Run JavaScript
         run: node coms.spec.js
