@@ -16,8 +16,7 @@ jobs:
         run: scripts\run_OBHPS.bat
 
       - name: Run PowerShell
-        shell: powershell
-        run: scripts\run_all_tests_OBHPS.ps1
+        run: powershell -ExecutionPolicy Bypass -File scripts\run_all_tests_OBHPS.ps1
 
       - name: Run JavaScript
         run: node scripts\coms.spec.js
