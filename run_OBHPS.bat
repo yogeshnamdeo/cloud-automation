@@ -1,9 +1,18 @@
 @echo off
+setlocal
+
 title OBHPS JMeter Automation
 
-set PS=C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+echo ===============================
+echo Running BAT on GitHub Actions
+echo Current directory: %CD%
+echo ===============================
 
-"%PS%" -NoProfile -ExecutionPolicy Bypass -File "C:\Users\YogeshNamdeo\Downloads\run_all_tests_OBHPS.ps1"
+REM Call PowerShell script RELATIVE to repo
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0run_all_tests_OBHPS.ps1"
 
-timeout /t 60 /nobreak >nul
-exit
+REM Optional wait
+timeout /t 5 /nobreak >nul
+
+echo BAT execution completed
+exit /b 0
