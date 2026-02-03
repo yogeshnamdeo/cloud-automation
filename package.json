@@ -1,0 +1,11 @@
+{
+  "name": "cloud-automation",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node coms.spec.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
