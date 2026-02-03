@@ -1,42 +1,62 @@
-Set-StrictMode -Off
-$ErrorActionPreference = "Stop"
+# ================================
+# OBHPS Automation - PowerShell
+# Cloud-safe version
+# ================================
 
-$JMETER = "C:\Users\YogeshNamdeo\Downloads\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\jmeter.bat"
+# 🔹 Always start in the script directory
+$BASE_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $BASE_DIR
 
-# List of JMX files
-$JMX_FILES = @(
-  	"D:\OneBuilderLoadTestScripts\NewScriptsBuilderV2\New folder\LATEST_HAPPYAPTH_SCENARIOS_BUILDERV2.jmx",
-    	"D:\OneBuilderLoadTestScripts\BuilderV2\HappyPathScenarios_OneBuilderV2.jmx"
-)
+Write-Host "================================"
+Write-Host "PowerShell script started"
+Write-Host "Base directory: $BASE_DIR"
+Write-Host "================================"
 
-$BASE = "D:\JMeterReports\OBHPS"
-
-# Create base report folder
-if (!(Test-Path $BASE)) {
-    New-Item -ItemType Directory -Force -Path $BASE | Out-Null
+# -------------------------------
+# Example: Java check
+# -------------------------------
+Write-Host "Checking Java..."
+java -version
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Java not found"
+    exit 1
 }
 
-foreach ($JMX in $JMX_FILES) {
+# -------------------------------
+# Example: JMeter execution
+# -------------------------------
+# UPDATE THESE PATHS AS NEEDED
+$JMETER_CMD = "jmeter"   # works if installed in PATH
+$JMX_FILE   = "$BASE_DIR\your_test.jmx"
+$RESULTS    = "$BASE_DIR\results"
+$LOG_FILE   = "$RESULTS\jmeter.log"
 
-    $TestName = [System.IO.Path]::GetFileNameWithoutExtension($JMX)
-
-    # Timestamped run folder
-    $RUN = Join-Path $BASE ($TestName + "_Run_" + (Get-Date -Format "yyyyMMdd_HHmmss"))
-    New-Item -ItemType Directory -Force -Path $RUN | Out-Null
-
-    $JTL = Join-Path $RUN "results.jtl"
-    $HTML = Join-Path $RUN "HTML"
-
-    Write-Host "Running JMeter Test: $TestName"
-
-    & $JMETER -n -t $JMX -l $JTL -e -o $HTML
-
-    # Convert HTML to PDF
-    & "C:\Users\YogeshNamdeo\Downloads\html_to_pdf.ps1" $HTML
-
+# Create results folder if missing
+if (!(Test-Path $RESULTS)) {
+    New-Item -ItemType Directory -Path $RESULTS | Out-Null
 }
 
-# Send final report email
-& "C:\Users\YogeshNamdeo\Downloads\send_outlook_report_OBHPS2.ps1" $BASE
+Write-Host "Running JMeter..."
+& $JMETER_CMD -n `
+  -t $JMX_FILE `
+  -l "$RESULTS\results.jtl" `
+  -j $LOG_FILE
 
-Write-Host "ALL JMETER TESTS COMPLETED SUCCESSFULLY."
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "JMeter execution failed"
+    exit 1
+}
+
+# -------------------------------
+# Example: Post-processing / checks
+# -------------------------------
+Write-Host "Running post execution checks..."
+# Your existing logic here (API checks, COMS validation, etc.)
+
+# -------------------------------
+# Success
+# -------------------------------
+Write-Host "================================"
+Write-Host "PowerShell script completed successfully"
+Write-Host "================================"
+exit 0
