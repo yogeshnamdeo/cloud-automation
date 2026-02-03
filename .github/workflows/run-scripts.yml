@@ -26,5 +26,8 @@ jobs:
       - name: Install Node dependencies
         run: npm install
 
-      - name: Run JavaScript
-        run: node coms.spec.js
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
